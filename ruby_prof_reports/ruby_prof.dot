@@ -1,4 +1,0 @@
-digraph "Profile" {
-labelloc=t;
-labeljust=l;
-subgraph "Thread 260" {

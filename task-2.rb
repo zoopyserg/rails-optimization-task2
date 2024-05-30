@@ -17,12 +17,30 @@ def collect_all_stats(report, users_objects)
   users_objects.each do |user|
     user_key = "#{user.attributes[2]} #{user.attributes[3]}"
     sessions = user.sessions
-    browsers = sessions.map { |s| s[3].upcase }
-    total_time = sessions.sum { |s| s[4].to_i }
-    longest_session = sessions.max_by { |s| s[4].to_i }[4].to_i
-    used_ie = browsers.any? { |b| b.include?('INTERNET EXPLORER') }
-    always_used_chrome = browsers.all? { |b| b.include?('CHROME') }
-    dates = sessions.map { |s| Date.parse(s[5]) }.sort.reverse.map(&:iso8601)
+
+    total_time = 0
+    longest_session = 0
+    used_ie = false
+    always_used_chrome = true
+    browsers = []
+    dates = []
+
+    sessions.each do |session|
+      browser = session[3].upcase
+      session_time = session[4].to_i
+      session_date = session[5]
+
+      # Use Date.strptime for known date format (e.g., "YYYY-MM-DD")
+      parsed_date = Date.strptime(session_date, '%Y-%m-%d')
+
+      total_time += session_time
+      longest_session = [longest_session, session_time].max
+      used_ie ||= browser.include?('INTERNET EXPLORER')
+      always_used_chrome &&= browser.include?('CHROME')
+
+      browsers << browser
+      dates << "#{parsed_date.year}-#{parsed_date.month.to_s.rjust(2, '0')}-#{parsed_date.day.to_s.rjust(2, '0')}"
+    end
 
     report['usersStats'][user_key] = {
       'sessionsCount' => sessions.count,
@@ -31,7 +49,7 @@ def collect_all_stats(report, users_objects)
       'browsers' => browsers.sort.join(', '),
       'usedIE' => used_ie,
       'alwaysUsedChrome' => always_used_chrome,
-      'dates' => dates
+      'dates' => dates.sort.reverse
     }
   end
 end
@@ -40,7 +58,7 @@ def work
   users = []
   sessions_by_user = Hash.new { |hash, key| hash[key] = [] }
 
-  CSV.foreach('data.txt', headers: false) do |row|
+  CSV.foreach('data_large.txt', headers: false) do |row|
     if row[0] == 'user'
       users << row
     elsif row[0] == 'session'
