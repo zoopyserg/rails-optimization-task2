@@ -1,0 +1,23 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    flamegraph (0.9.5)
+    memory_profiler (1.0.1)
+    ruby-prof (1.7.0)
+    stackprof (0.2.26)
+
+PLATFORMS
+  arm64-darwin-23
+  ruby
+
+DEPENDENCIES
+  flamegraph
+  memory_profiler
+  ruby-prof
+  stackprof
+
+RUBY VERSION
+   ruby 3.3.1p55
+
+BUNDLED WITH
+   2.5.10
