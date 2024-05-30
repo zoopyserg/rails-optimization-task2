@@ -40,7 +40,7 @@ def work
   users = []
   sessions_by_user = Hash.new { |hash, key| hash[key] = [] }
 
-  CSV.foreach('data_large.txt', headers: false) do |row|
+  CSV.foreach('data.txt', headers: false) do |row|
     if row[0] == 'user'
       users << row
     elsif row[0] == 'session'

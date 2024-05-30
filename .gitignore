@@ -1,0 +1,7 @@
+data_large.txt
+flamegraph.html
+stackprof.dump
+data_large2.txt
+callgrind.out.90059
+ruby_prof_reports/*
+stackprof_reports/*
